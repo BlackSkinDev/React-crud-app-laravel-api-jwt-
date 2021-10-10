@@ -72,7 +72,7 @@ class Login extends Component {
                     <main className="form-signin">
                         {this.state.error_response }
                         <form onSubmit={this.login}>
-                            <h1 className="h3 mb-3 fw-normal text-center">Please sign in</h1>
+                            <h1 className="h3 mb-3 fw-normal text-center">Sign In</h1>
                             <div className="form-floating mt-4">
                                 <input type="email" className="form-control"   name="email" placeholder="name@example.com" onChange={this.handleInput} />
                                 <label htmlFor="floatingInput">Email address</label>
