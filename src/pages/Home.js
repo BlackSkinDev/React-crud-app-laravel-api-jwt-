@@ -13,7 +13,7 @@ class Home extends Component {
             token:localStorage.getItem('token'),
             employees:[],
             loading:true,
-            BASE_URL:'http://localhost:8000/api',
+            BASE_URL:'https://users-system.herokuapp.com/api',
 
         }
         this.middleware()

@@ -6,7 +6,7 @@ import swal from "sweetalert";
 class Edit extends Component {
 
     state = {
-        BASE_URL:'http://localhost:8000/api',
+        BASE_URL:'https://users-system.herokuapp.com/api',
         full_name:'',
         email:'',
         phone_number:'',
