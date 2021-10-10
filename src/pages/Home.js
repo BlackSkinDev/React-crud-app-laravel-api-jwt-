@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import axios from "axios";
 import {Redirect} from "react-router-dom";
 import swal from "sweetalert";
+import UserImportModal from "../components/UserImportModal";
 class Home extends Component {
 
     constructor(props) {
@@ -13,7 +14,7 @@ class Home extends Component {
             token:localStorage.getItem('token'),
             employees:[],
             loading:true,
-            BASE_URL:'https://users-system.herokuapp.com/api',
+            BASE_URL:process.env.REACT_APP_BASE_URL,
 
         }
         this.middleware()
@@ -120,10 +121,11 @@ class Home extends Component {
                     <div className="col-md-12">
                         <div className="card">
                             <div className="card-header">
-                                <h4>Employees Data</h4>
                                 <button className="btn btn-danger btn-sm float-end" onClick={this.logout}>Logout</button>
+                               <UserImportModal/>
                             </div>
                             <div className="card-body">
+                                <h4>Employees Data</h4>
                                 <table className="table  table-striped table-bordered mt-4 table-hover" >
                                     <tr>
                                     <th>S/N</th>
