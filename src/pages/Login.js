@@ -1,76 +1,91 @@
-import React, {useState} from 'react';
-import {Redirect} from "react-router-dom";
+import React, {Component} from 'react';
+import axios from "axios";
+import swal from "sweetalert";
 
-const Login = () => {
+class Login extends Component {
+    state = {
+        email:'',
+        password:'',
+        BASE_URL:'http://localhost:8000/api',
+        error_response:'',
+    }
 
+    componentDidMount() {
+        this.middleware()
+    }
 
-
-    const [email,setEmail] = useState("")
-    const [password,setPassword] = useState("")
-    const [errors,setErrors] = useState(null)
-    let [state,setState] = useState(false)
-
-
-    const token = localStorage.getItem('token')
-    if (token && !state){
-        return <Redirect to="/home"/>
+     middleware= (e)=>{
+        if (localStorage.getItem('token')){
+            window.location.href = "/home";
+        }
     }
 
 
-    const login =  async (e)=>{
-        e.preventDefault()
-        const response = await fetch('http://localhost:8000/api/login',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            credentials: 'include',
-            body: JSON.stringify({
-                email,
-                password
-            })
+    handleInput = (e)=>{
+        this.setState({
+            [e.target.name]:e.target.value
         })
-        const data = await response.json()
-        if (data.errors){
-            setErrors(data.errors)
-            setPassword("")
+    }
 
-        }
-        if (data.token){
-            localStorage.setItem('token', data.token)
-            state =true
-        }
-        if (state){
-            window.location.reload(false);
-            return <Redirect to="/home"/>
-        }
+    login = async (e)=>{
+        e.preventDefault()
+        document.getElementById("login-button").disabled = true;
+        document.getElementById("login-button").innerHTML='Validating credentials....'
+        const res = await
+            axios.post(`${this.state.BASE_URL}/login`,{email:this.state.email,password:this.state.password}, { headers: {"Authorization" : `Bearer ${this.state.token}`} },)
+                .then(res=>{
+                    document.getElementById("login-button").disabled = false;
+                    document.getElementById("login-button").innerHTML='Sign in'
+                    localStorage.setItem('token', res.data.token)
+                    window.location.href = "/home";
 
-     }
+                })
+                .catch(err=>{
+                    document.getElementById("login-button").disabled = false;
+                    document.getElementById("login-button").innerHTML='Sign in'
+                    let errors =  err.response.data.errors.map((item,index)=>{
+                        return(
+                            <li key={index} className="text-danger">{item}</li>
+                        )
+                    });
+                    this.setState({
+                        error_response:errors
+                    })
+                    swal({
+                        title: "Error!",
+                        text: "Failed",
+                        icon: "error",
+                    });
+                    window.scrollTo(0, 0)
+
+                })
+
+    }
 
 
-    return (
-        <main className="form-signin">
-            <form onSubmit={login}>
-                { errors &&
-                <div className="alert alert-danger">
-                    {errors}
-                </div> }
-                <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
-                <div className="form-floating">
-                    <input type="email" className="form-control"  placeholder="name@example.com" onChange={(e)=>{
-                        setEmail(e.target.value)
-                    }}/>
-                    <label htmlFor="floatingInput">Email address</label>
-                </div>
-                <div className="form-floating mt-4">
-                    <input type="password" className="form-control" value={password} placeholder="Password"  onChange={(e)=>{
-                        setPassword(e.target.value)
-                    }}/>
-                    <label htmlFor="floatingPassword">Password</label>
+    render() {
+        return (
+            <div>
 
-                </div>
-                <button className="w-100 btn btn-lg btn-dark mt-2" type="submit">Sign in</button>
-            </form>
-        </main>
-    );
-};
+                <main className="form-signin">
+                    {this.state.error_response }
+                    <form onSubmit={this.login}>
+                        <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+                        <div className="form-floating">
+                            <input type="email" className="form-control"   name="email" placeholder="name@example.com" onChange={this.handleInput} />
+                            <label htmlFor="floatingInput">Email address</label>
+                        </div>
+                        <div className="form-floating mt-4">
+                            <input type="password" className="form-control"  placeholder="Password" name="password" onChange={this.handleInput}/>
+                            <label htmlFor="floatingPassword">Password</label>
+
+                        </div>
+                        <button className="w-100 btn btn-lg btn-dark mt-2" type="submit" id="login-button">Sign in</button>
+                    </form>
+                </main>
+            </div>
+        );
+    }
+}
 
 export default Login;
