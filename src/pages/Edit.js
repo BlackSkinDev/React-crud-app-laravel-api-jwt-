@@ -48,7 +48,13 @@ class Edit extends Component {
                     }
                 })
                 .catch(err=>{
-                    this.logoutExpiredSessions()
+                    // forbidden
+                    if (err.response.status===403){
+                        this.logoutExpiredSessions(err.response.data.message)
+                    }
+                    else{
+                        this.logoutExpiredSessions("Oops! Seems your session has expired")
+                    }
                 })
     }
 
@@ -78,7 +84,10 @@ class Edit extends Component {
                 })
                 .catch(err=>{
                     if(err.response.status===401){
-                        this.logoutExpiredSessions()
+                        this.logoutExpiredSessions("Oops! Seems your session has expired")
+                    }
+                    else if(err.response.status===403){
+                        this.logoutExpiredSessions(err.response.data.message)
                     }
                     else{
                         document.getElementById("update-button").disabled = false;
@@ -116,12 +125,12 @@ class Edit extends Component {
         }
     }
 
-    logoutExpiredSessions = async (e)=>{
+    logoutExpiredSessions = (error)=>{
         localStorage.removeItem("token")
         swal({
-            title:'Oops! Seems your session has expired',
+            title:error,
             text:'You are being redirected to login page!',
-            icon: "success",
+            icon: "error",
             button:"Ok!",
         }).then(function () {
             window.location.href = "/login";

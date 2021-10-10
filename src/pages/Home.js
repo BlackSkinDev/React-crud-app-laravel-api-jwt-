@@ -15,6 +15,7 @@ class Home extends Component {
             employees:[],
             loading:true,
             BASE_URL:process.env.REACT_APP_BASE_URL,
+            role:''
 
         }
         this.middleware()
@@ -34,10 +35,18 @@ class Home extends Component {
                      }
                  })
                  .catch(err=>{
-                    this.logoutExpiredSessions()
+                     // forbidden
+                     if (err.response.status===403){
+                         this.logoutExpiredSessions(err.response.data.message)
+                     }
+                     else{
+                        this.logoutExpiredSessions("Oops! Seems your session has expired")
+                     }
                  })
+       await this.getUserRole()
 
-    }
+
+   }
 
     logout = async (e)=>{
         const res = await
@@ -54,10 +63,40 @@ class Home extends Component {
                     });
                 })
                 .catch(err=>{
-                    this.logoutExpiredSessions()
+                    // forbidden
+                    if (err.response.status===403){
+                        this.logoutExpiredSessions(err.response.data.message)
+                    }
+                    else{
+                        this.logoutExpiredSessions("Oops! Seems your session has expired")
+                    }
                 })
 
     }
+
+
+    getUserRole = async (e)=>{
+        axios.get(`${this.state.BASE_URL}/user`, { headers: {"Authorization" : `Bearer ${this.state.token}`} })
+            .then(res=>{
+                if (res.status===200){
+                    this.setState({
+                        role:res.data.role,
+                    });
+                }
+            })
+            .catch(err=>{
+                // forbidden
+                if (err.response.status===403){
+                    this.logoutExpiredSessions(err.response.data.message)
+                }
+                else{
+                    this.logoutExpiredSessions("Oops! Seems your session has expired")
+                }
+            })
+    }
+
+
+
 
     middleware = async (e)=>{
        if (!this.state.token){
@@ -72,12 +111,12 @@ class Home extends Component {
        }
     }
 
-    logoutExpiredSessions = async (e)=>{
+    logoutExpiredSessions = (error)=>{
         localStorage.removeItem("token")
             swal({
-                title:'Oops! Seems your session has expired',
+                title:error,
                 text:'You are being redirected to login page!',
-                icon: "success",
+                icon: "error",
                 button:"Ok!",
             }).then(function () {
                 window.location.href = "/login";
@@ -116,7 +155,7 @@ class Home extends Component {
         }
         return (
             <div>
-                <h4>Welcome</h4>
+                <h4>Role: {this.state.role}</h4>
                 <div className="row mt-4">
                     <div className="col-md-12">
                         <div className="card">
