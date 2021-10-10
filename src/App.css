@@ -30,14 +30,15 @@ body {
 }
 
 
-.cntainer {
-  max-width: 900px;
+.form-wrapper{
+  max-width: 400px;
   margin: 30px auto;
   overflow: auto;
   min-height: 500px;
   border: 1px solid steelblue;
   padding: 30px;
   border-radius: 5px;
+
 }
 
 .makeshift{

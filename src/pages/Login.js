@@ -68,23 +68,24 @@ class Login extends Component {
     render() {
         return (
             <div>
+                <div className="form-wrapper animate__animated animate__fadeInRight">
+                    <main className="form-signin">
+                        {this.state.error_response }
+                        <form onSubmit={this.login}>
+                            <h1 className="h3 mb-3 fw-normal text-center">Please sign in</h1>
+                            <div className="form-floating mt-4">
+                                <input type="email" className="form-control"   name="email" placeholder="name@example.com" onChange={this.handleInput} />
+                                <label htmlFor="floatingInput">Email address</label>
+                            </div>
+                            <div className="form-floating mt-4">
+                                <input type="password" id="password" className="form-control"  placeholder="Password" name="password" onChange={this.handleInput}/>
+                                <label htmlFor="floatingPassword">Password</label>
 
-                <main className="form-signin">
-                    {this.state.error_response }
-                    <form onSubmit={this.login}>
-                        <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
-                        <div className="form-floating">
-                            <input type="email" className="form-control"   name="email" placeholder="name@example.com" onChange={this.handleInput} />
-                            <label htmlFor="floatingInput">Email address</label>
-                        </div>
-                        <div className="form-floating mt-4">
-                            <input type="password" id="password" className="form-control"  placeholder="Password" name="password" onChange={this.handleInput}/>
-                            <label htmlFor="floatingPassword">Password</label>
-
-                        </div>
-                        <button className="w-100 btn btn-lg btn-dark mt-2" type="submit" id="login-button">Sign in</button>
-                    </form>
-                </main>
+                            </div>
+                            <button className="w-100 btn btn-lg btn-dark mt-2" type="submit" id="login-button">Sign in</button>
+                        </form>
+                    </main>
+                </div>
             </div>
         );
     }
