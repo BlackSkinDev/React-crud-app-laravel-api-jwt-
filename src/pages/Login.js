@@ -41,6 +41,7 @@ class Login extends Component {
 
                 })
                 .catch(err=>{
+                    document.getElementById("password").value=""
                     document.getElementById("login-button").disabled = false;
                     document.getElementById("login-button").innerHTML='Sign in'
                     let errors =  err.response.data.errors.map((item,index)=>{
@@ -49,7 +50,8 @@ class Login extends Component {
                         )
                     });
                     this.setState({
-                        error_response:errors
+                        error_response:errors,
+                        password:''
                     })
                     swal({
                         title: "Error!",
@@ -76,7 +78,7 @@ class Login extends Component {
                             <label htmlFor="floatingInput">Email address</label>
                         </div>
                         <div className="form-floating mt-4">
-                            <input type="password" className="form-control"  placeholder="Password" name="password" onChange={this.handleInput}/>
+                            <input type="password" id="password" className="form-control"  placeholder="Password" name="password" onChange={this.handleInput}/>
                             <label htmlFor="floatingPassword">Password</label>
 
                         </div>
