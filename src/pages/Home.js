@@ -101,7 +101,7 @@ class Home extends Component {
     middleware = async (e)=>{
        if (!this.state.token){
            swal({
-               title:'Oops',
+               title:'Oops, Seems your session has expired',
                text:'You are being redirected to login page!',
                icon: "success",
                button:"Ok!",
